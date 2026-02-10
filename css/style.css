@@ -1,0 +1,84 @@
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: #0f172a; 
+    color: #f1f5f9; 
+}
+
+/* Glassmorphism */
+.glass { 
+    background: rgba(30, 41, 59, 0.7); 
+    backdrop-filter: blur(12px); 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+}
+
+.glass-card { 
+    background: rgba(15, 23, 42, 0.6); 
+    backdrop-filter: blur(8px); 
+    border: 1px solid rgba(255, 255, 255, 0.05); 
+    transition: all 0.3s ease; 
+}
+
+.glass-card:hover { 
+    border-color: rgba(99, 102, 241, 0.3); 
+}
+
+/* Inputs */
+.input-dark { 
+    background: #1e293b; 
+    border: 1px solid #334155; 
+    color: white; 
+    transition: all 0.2s; 
+}
+
+.input-dark:focus { 
+    border-color: #6366f1; 
+    outline: none; 
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); 
+}
+
+/* Modals & Animations */
+.modal-overlay { 
+    background: rgba(0, 0, 0, 0.8); 
+    backdrop-filter: blur(5px); 
+}
+
+.hidden-modal { 
+    display: none; 
+}
+
+.fade-in { 
+    animation: fadeIn 0.3s ease-out; 
+}
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* Toast Notifications */
+#toast-container { 
+    position: fixed; 
+    top: 20px; 
+    right: 20px; 
+    z-index: 100; 
+}
+
+.toast { 
+    background: #1e293b; 
+    border-left: 4px solid #10b981; 
+    padding: 12px 20px; 
+    margin-bottom: 10px; 
+    border-radius: 6px; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    min-width: 250px; 
+    animation: slideIn 0.3s ease-out; 
+    color: white; 
+}
+
+@keyframes slideIn { 
+    from { transform: translateX(100%); opacity: 0; } 
+    to { transform: translateX(0); opacity: 1; } 
+}
