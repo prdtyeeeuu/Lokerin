@@ -1,14 +1,17 @@
+// Fungsi-fungsi yang sekarang didefinisikan di database.js
+// File ini tetap ada untuk kompatibilitas, tetapi sebagian besar fungsionalitas
+// sekarang menggunakan API backend yang didefinisikan di api.js dan database.js
+
+// Alias untuk fungsi-fungsi dari database.js
 const db = {
-    getUsers: () => JSON.parse(localStorage.getItem('lokerin_users')) || [],
-    
-    getCurrentUser: () => JSON.parse(localStorage.getItem('lokerin_current_user')),
-    
-    saveUser: (user) => {
-        let users = db.getUsers();
-        const idx = users.findIndex(u => u.id === user.id);
-        if(idx >= 0) users[idx] = user; else users.push(user);
-        localStorage.setItem('lokerin_users', JSON.stringify(users));
-    },
-    
-    setCurrentUser: (user) => localStorage.setItem('lokerin_current_user', JSON.stringify(user))
+    getCurrentUser: getCurrentUser,
+    setCurrentUser: setCurrentUser,
+    getUsers: getAllUsers,
+    saveUser: saveUser
 };
+
+// Fungsi tambahan untuk kompatibilitas
+function getUsers() {
+    // Kembali ke fungsi getAllUsers dari database.js
+    return getAllUsers();
+}
