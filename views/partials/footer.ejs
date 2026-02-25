@@ -1,0 +1,95 @@
+    <!-- Footer -->
+    <footer class="bg-slate-900/50 border-t border-slate-800 py-6 px-4 sm:px-6 mt-auto">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        <span class="font-bold text-lg text-white">Lokerin</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">Platform pencarian kerja dan rekrutmen yang menghubungkan talenta terbaik dengan perusahaan ternama.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-bold text-white mb-3">Tautan Cepat</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/" class="text-slate-400 hover:text-indigo-400 transition-colors">Beranda</a></li>
+                        <li><a href="/dashboard" class="text-slate-400 hover:text-indigo-400 transition-colors">Dashboard</a></li>
+                        <li><a href="/jobs" class="text-slate-400 hover:text-indigo-400 transition-colors">Lowongan Kerja</a></li>
+                        <li><a href="/applications" class="text-slate-400 hover:text-indigo-400 transition-colors">Lamaran Saya</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Social -->
+                <div>
+                    <h4 class="font-bold text-white mb-3">Ikuti Kami</h4>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-indigo-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-indigo-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-indigo-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-indigo-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-slate-800 pt-4 text-center">
+                <p class="text-slate-500 text-sm">&copy; 2026 Lokerin. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="/js/api.js"></script>
+    <script src="/js/database.js"></script>
+    <script src="/js/user-panel.js"></script>
+    <script src="/js/hrd-panel.js"></script>
+    <script src="/js/admin-panel.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/ui.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) menu.classList.add('hidden');
+        }
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuButton = document.getElementById('mobile-menu-button');
+            if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target) && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+        // Initialize app on page load for all pages
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                ensurePanelsLoaded();
+                initApp();
+            }, 100);
+        });
+        
+        // Make UI functions globally available
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.handleAvatarUpload = handleAvatarUpload;
+        window.showToast = showToast;
+    </script>
+</body>
+</html>

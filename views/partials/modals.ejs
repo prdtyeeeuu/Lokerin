@@ -1,0 +1,90 @@
+<!-- Edit Profile Modal -->
+<div id="modal-edit-profile" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden-modal">
+    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-lg shadow-2xl relative">
+        <button onclick="closeModal('modal-edit-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-times"></i></button>
+        <h3 class="text-xl font-bold mb-4">Edit Profil</h3>
+        <form onsubmit="saveProfile(event)">
+            <div class="space-y-4">
+                <div><label class="text-xs text-slate-400 block mb-1">Job Title / Posisi</label><input type="text" id="edit-job" class="w-full input-dark rounded p-2 text-sm"></div>
+                <div><label class="text-xs text-slate-400 block mb-1">Nama Perusahaan</label><input type="text" id="edit-company" class="w-full input-dark rounded p-2 text-sm"></div>
+                <div><label class="text-xs text-slate-400 block mb-1">Bio Singkat</label><textarea id="edit-bio" rows="3" class="w-full input-dark rounded p-2 text-sm"></textarea></div>
+                <div><label class="text-xs text-slate-400 block mb-1">Keahlian (Pisahkan dengan koma)</label><input type="text" id="edit-skills" class="w-full input-dark rounded p-2 text-sm"></div>
+                <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-medium">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Evidence Modal -->
+<div id="modal-add-evidence" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden-modal">
+    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-lg shadow-2xl relative">
+        <button onclick="closeModal('modal-add-evidence')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-times"></i></button>
+        <h3 class="text-xl font-bold mb-4">Tambah Bukti Kerja</h3>
+        <form onsubmit="addEvidence(event)">
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Tipe Bukti</label>
+                    <select id="ev-type" onchange="toggleEvidenceInput()" class="w-full input-dark rounded p-2 text-sm">
+                        <option value="image">Upload Foto / Screenshot</option>
+                        <option value="link">Link Website / Portfolio</option>
+                    </select>
+                </div>
+                <div><label class="text-xs text-slate-400 block mb-1">Judul Project</label><input type="text" id="ev-title" required class="w-full input-dark rounded p-2 text-sm"></div>
+                <div><label class="text-xs text-slate-400 block mb-1">Deskripsi</label><textarea id="ev-desc" rows="2" required class="w-full input-dark rounded p-2 text-sm"></textarea></div>
+                <div id="input-image-group"><label class="text-xs text-slate-400 block mb-1">File Gambar</label><input type="file" id="ev-img" accept="image/*" class="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"></div>
+                <div id="input-link-group" class="hidden"><label class="text-xs text-slate-400 block mb-1">URL Website</label><input type="url" id="ev-url" placeholder="https://..." class="w-full input-dark rounded p-2 text-sm"></div>
+                <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-medium">Unggah Project</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Profile Preview Modal -->
+<div id="modal-profile-preview" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden-modal">
+    <div class="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative p-4 sm:p-8">
+        <button onclick="closeModal('modal-profile-preview')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-times"></i></button>
+        <div class="flex flex-col gap-8">
+            <div class="text-center sm:text-left">
+                <img id="preview-avatar" src="" class="w-32 h-32 rounded-full mx-auto sm:mx-0 sm:ml-0 border-4 border-slate-700 mb-4 object-cover" loading="lazy">
+                <h2 id="preview-name" class="text-xl font-bold text-white"></h2>
+                <p id="preview-role" class="text-indigo-400 text-sm"></p>
+                <div id="preview-company" class="text-slate-500 text-xs mt-1"></div>
+                <div class="mt-4">
+                     <div class="text-xs text-slate-400 mb-1">Kelengkapan Profil</div>
+                     <div class="w-full bg-slate-700 rounded-full h-2"><div id="preview-completeness" class="bg-emerald-500 h-2 rounded-full" style="width: 0%"></div></div>
+                </div>
+            </div>
+            <div class="sm:pl-0">
+                <h3 class="font-bold text-white mb-2">Tentang</h3>
+                <p id="preview-bio" class="text-slate-400 text-sm mb-6 italic">Data ini disembunyikan demi privasi.</p>
+                <h3 class="font-bold text-white mb-2">Keahlian</h3>
+                <div id="preview-skills" class="flex flex-wrap gap-2 mb-6"></div>
+                <div id="full-profile-section" class="hidden">
+                    <h3 class="font-bold text-white mb-4">Portfolio & Bukti Kerja</h3>
+                    <div id="preview-evidences" class="grid grid-cols-1 gap-4"></div>
+                    <div class="mt-6 p-4 bg-emerald-900/20 border border-emerald-500/30 rounded-lg text-sm text-emerald-300"><i class="fa-solid fa-lock-open mr-2"></i> Anda memiliki akses penuh ke profil ini.</div>
+                </div>
+                <div id="restricted-section">
+                    <div class="p-6 bg-slate-800/50 rounded-xl border border-dashed border-slate-600 text-center">
+                        <i class="fa-solid fa-lock text-3xl text-slate-500 mb-3"></i>
+                        <h4 class="text-lg font-bold text-white mb-2">Profil Terproteksi</h4>
+                        <p class="text-slate-400 text-sm mb-4">Untuk melihat detail portfolio, bio lengkap, dan file CV dari user ini, Anda harus meminta izin akses terlebih dahulu.</p>
+                        <button onclick="requestAccess()" id="btn-request-access" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors">Minta Izin Akses</button>
+                        <p id="pending-msg" class="hidden text-yellow-400 text-sm mt-2">Permintaan dikirim. Menunggu persetujuan user.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification/Request Modal -->
+<div id="modal-requests" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden-modal">
+    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-md shadow-2xl relative">
+        <button onclick="closeModal('modal-requests')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-times"></i></button>
+        <h3 class="text-xl font-bold mb-4 text-white">Permintaan Akses Profil</h3>
+        <div id="requests-list" class="space-y-4">
+            <p class="text-slate-400 text-sm text-center py-4">Tidak ada permintaan baru.</p>
+        </div>
+    </div>
+</div>

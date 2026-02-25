@@ -1,0 +1,67 @@
+<%- include('partials/header', { title: 'Buat Lowongan' }) %>
+
+<div id="app-layout" class="flex flex-col min-h-screen">
+    <%- include('partials/nav') %>
+
+    <main id="main-content" class="flex-1 pt-16 sm:pt-20 px-4 pb-8 overflow-y-auto">
+        <div id="view-hrd-create-job" class="view-section max-w-3xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Buat Lowongan Baru</h2>
+                <p class="text-slate-400">Publikasikan lowongan pekerjaan Anda.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+                <form id="create-job-form" onsubmit="handleCreateJob(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Judul Posisi</label>
+                            <input type="text" id="job-title" required class="w-full input-dark rounded p-2 text-sm" placeholder="Contoh: Senior Software Developer">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Deskripsi Pekerjaan</label>
+                            <textarea id="job-description" rows="4" required class="w-full input-dark rounded p-2 text-sm" placeholder="Jelaskan tanggung jawab dan kualifikasi..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs text-slate-400 block mb-1">Salary Min (IDR)</label>
+                                <input type="number" id="job-salary-min" class="w-full input-dark rounded p-2 text-sm" placeholder="5000000">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 block mb-1">Salary Max (IDR)</label>
+                                <input type="number" id="job-salary-max" class="w-full input-dark rounded p-2 text-sm" placeholder="15000000">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Lokasi</label>
+                            <input type="text" id="job-location" class="w-full input-dark rounded p-2 text-sm" placeholder="Contoh: Jakarta, Indonesia">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs text-slate-400 block mb-1">Tipe Pekerjaan</label>
+                                <select id="job-type" class="w-full input-dark rounded p-2 text-sm">
+                                    <option value="full-time">Full Time</option>
+                                    <option value="part-time">Part Time</option>
+                                    <option value="contract">Contract</option>
+                                    <option value="internship">Internship</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 block mb-1">Level Pengalaman</label>
+                                <select id="job-experience" class="w-full input-dark rounded p-2 text-sm">
+                                    <option value="entry">Entry Level</option>
+                                    <option value="mid">Mid Level</option>
+                                    <option value="senior">Senior Level</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg transition-all">
+                            <i class="fa-solid fa-plus mr-2"></i>Publikasikan Lowongan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/modals') %>
+<%- include('partials/footer') %>

@@ -1,0 +1,31 @@
+<%- include('partials/header', { title: 'Dashboard HRD' }) %>
+
+<div id="app-layout" class="flex flex-col min-h-screen">
+    <%- include('partials/nav') %>
+
+    <main id="main-content" class="flex-1 pt-16 sm:pt-20 px-4 pb-8 overflow-y-auto">
+        <div id="view-hrd-dashboard" class="view-section max-w-6xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Dashboard HRD</h2>
+                <p class="text-slate-400">Kelola lowongan dan pelamar Anda.</p>
+            </div>
+            <div id="hrd-dashboard-content" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-slate-400 text-sm mb-1">Total Lowongan</div>
+                    <div class="text-3xl font-bold text-indigo-400" id="hrd-total-jobs">0</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-slate-400 text-sm mb-1">Total Pelamar</div>
+                    <div class="text-3xl font-bold text-emerald-400" id="hrd-total-applicants">0</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-slate-400 text-sm mb-1">Menunggu Review</div>
+                    <div class="text-3xl font-bold text-yellow-400" id="hrd-pending-review">0</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/modals') %>
+<%- include('partials/footer') %>

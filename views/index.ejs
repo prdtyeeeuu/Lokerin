@@ -1,0 +1,334 @@
+<%- include('partials/header', { title: 'Home' }) %>
+<%- include('partials/auth-forms') %>
+
+<div id="app-layout" class="hidden flex flex-col min-h-screen">
+    <%- include('partials/nav') %>
+
+    <main id="main-content" class="flex-1 pt-16 sm:pt-20 px-4 pb-8 overflow-y-auto">
+        <!-- Home View (default for homepage) -->
+        <div id="view-home" class="view-section fade-in">
+            <div class="relative w-full overflow-hidden rounded-3xl mb-8">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700"></div>
+                <div class="absolute inset-0 bg-[url('https://picsum.photos/seed/techwave/1920/600')] bg-cover bg-center opacity-20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                <div class="relative z-10 px-6 py-16 sm:px-12 sm:py-24">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-100 mb-6 border border-white/20">
+                            <i class="fa-solid fa-rocket"></i>
+                            <span>Platform #1 untuk Karir Impian Anda</span>
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
+                            Temukan Pekerjaan<br/>
+                            <span class="bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">Impian Anda</span>
+                        </h1>
+                        <p class="text-lg sm:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
+                            Lokerin menghubungkan talenta terbaik dengan perusahaan ternama. Mulai perjalanan karir Anda sekarang!
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button onclick="router.navigate('user-jobs')" class="px-8 py-4 bg-white text-indigo-700 font-bold rounded-xl hover:bg-slate-100 transition-all shadow-lg shadow-white/20 hover:shadow-white/40 hover:scale-105 text-center">
+                                <i class="fa-solid fa-search mr-2"></i>Cari Pekerjaan
+                            </button>
+                            <button onclick="router.navigate('profile')" class="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-xl hover:bg-white/20 transition-all border border-white/30 hover:scale-105 text-center">
+                                <i class="fa-solid fa-user-pen mr-2"></i>Lengkapi Profil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0">
+                    <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+                        <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="rgba(15, 23, 42, 1)"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-5xl mx-auto">
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform">
+                    <div class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">10K+</div>
+                    <div class="text-sm text-slate-400">Lowongan Aktif</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform">
+                    <div class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-2">50K+</div>
+                    <div class="text-sm text-slate-400">Pelamar</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform">
+                    <div class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">5K+</div>
+                    <div class="text-sm text-slate-400">Perusahaan</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform">
+                    <div class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent mb-2">95%</div>
+                    <div class="text-sm text-slate-400">Success Rate</div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white"><i class="fa-solid fa-layer-group text-indigo-400 mr-2"></i>Kategori Populer</h2>
+                    <button onclick="router.navigate('user-jobs')" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium">Lihat Semua <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div class="glass-card p-4 rounded-xl text-center hover:scale-105 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-blue-500/30">
+                            <i class="fa-solid fa-code text-white text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-white">IT & Software</div>
+                        <div class="text-xs text-slate-400 mt-1">2.5K Lowongan</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl text-center hover:scale-105 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-indigo-500/30">
+                            <i class="fa-solid fa-chart-line text-white text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-white">Marketing</div>
+                        <div class="text-xs text-slate-400 mt-1">1.8K Lowongan</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl text-center hover:scale-105 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-purple-500/30">
+                            <i class="fa-solid fa-palette text-white text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-white">Design</div>
+                        <div class="text-xs text-slate-400 mt-1">1.2K Lowongan</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl text-center hover:scale-105 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-cyan-500/30">
+                            <i class="fa-solid fa-calculator text-white text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-white">Finance</div>
+                        <div class="text-xs text-slate-400 mt-1">900+ Lowongan</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl text-center hover:scale-105 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-emerald-500/30">
+                            <i class="fa-solid fa-user-doctor text-white text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-white">Healthcare</div>
+                        <div class="text-xs text-slate-400 mt-1">750+ Lowongan</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl text-center hover:scale-105 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-orange-500/30">
+                            <i class="fa-solid fa-bullhorn text-white text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-white">Sales</div>
+                        <div class="text-xs text-slate-400 mt-1">1.1K Lowongan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="mb-12">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-2"><i class="fa-solid fa-list-check text-indigo-400 mr-2"></i>Cara Kerja Lokerin</h2>
+                    <p class="text-slate-400">3 langkah mudah untuk mendapatkan pekerjaan impian Anda</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-card p-6 rounded-2xl text-center relative">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-user-plus text-3xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Buat Akun</h3>
+                        <p class="text-sm text-slate-400">Daftar gratis dalam hitungan menit dan lengkapi profil profesional Anda.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl text-center relative">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass text-3xl text-indigo-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Cari Pekerjaan</h3>
+                        <p class="text-sm text-slate-400">Jelajahi ribuan lowongan dari perusahaan terpercaya dan temukan yang cocok.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl text-center relative">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-paper-plane text-3xl text-purple-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Kirim Lamaran</h3>
+                        <p class="text-sm text-slate-400">Lamar pekerjaan impian Anda dan tunggu respons dari perusahaan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700"></div>
+                <div class="absolute inset-0 bg-[url('https://picsum.photos/seed/pattern/1920/600')] bg-cover bg-center opacity-10"></div>
+                <div class="absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-cyan-500/20 rounded-full blur-3xl"></div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Siap Memulai Karir Impian Anda?</h2>
+                    <p class="text-slate-200 mb-8 max-w-xl mx-auto">Bergabunglah dengan ribuan profesional lainnya dan temukan peluang terbaik untuk masa depan Anda.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="router.navigate('user-jobs')" class="px-8 py-4 bg-white text-indigo-700 font-bold rounded-xl hover:bg-slate-100 transition-all shadow-lg hover:scale-105">
+                            <i class="fa-solid fa-search mr-2"></i>Lihat Lowongan
+                        </button>
+                        <button onclick="router.navigate('hrd-create-job')" class="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-xl hover:bg-white/20 transition-all border border-white/30 hover:scale-105">
+                            <i class="fa-solid fa-plus mr-2"></i>Posting Lowongan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-dashboard" class="view-section hidden max-w-6xl mx-auto fade-in">
+            <div class="glass-card rounded-2xl overflow-hidden mb-8 relative">
+                <div class="h-32 bg-gradient-to-r from-indigo-900 to-purple-900 w-full"></div>
+                <div class="px-4 sm:px-8 pb-8 flex flex-col items-center sm:flex-row gap-6 -mt-12 sm:-mt-16">
+                    <div class="relative group">
+                        <div class="w-32 h-32 rounded-full bg-slate-800 border-4 border-slate-900 overflow-hidden shadow-xl">
+                            <img id="profile-avatar-display" src="" class="w-full h-full object-cover" loading="lazy">
+                        </div>
+                        <label for="avatar-upload" class="absolute bottom-2 right-2 bg-indigo-600 hover:bg-indigo-500 p-2 rounded-full text-white shadow-lg cursor-pointer">
+                            <i class="fa-solid fa-camera text-xs"></i>
+                        </label>
+                        <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(this)">
+                    </div>
+                    <div class="flex-1 mt-4 text-center sm:text-left">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div>
+                                <h1 class="text-2xl sm:text-3xl font-bold text-white" id="profile-name-display">Nama</h1>
+                                <p class="text-indigo-400 font-medium flex flex-col sm:flex-row items-center gap-2" id="profile-role-display">
+                                    <span>Role</span>
+                                    <span id="profile-company-display" class="text-slate-400 text-sm font-normal bg-slate-800 px-2 py-0.5 rounded"></span>
+                                </p>
+                            </div>
+                            <button onclick="openModal('modal-edit-profile')" class="mt-2 sm:mt-0 px-4 py-2 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-sm font-medium text-white">
+                                <i class="fa-solid fa-pen mr-2"></i> Edit
+                            </button>
+                        </div>
+                        <p class="text-slate-300 mt-4 text-sm" id="profile-bio-display"></p>
+                        <div class="flex flex-wrap justify-center sm:justify-start gap-2 mt-4" id="profile-skills-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold text-white">Bukti Kerja & Portfolio</h2>
+                <button onclick="openModal('modal-add-evidence')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow-lg shadow-indigo-600/20 w-full sm:w-auto text-center">
+                    + Tambah Project
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="portfolio-grid"></div>
+        </div>
+
+        <!-- HRD Dashboard View -->
+        <div id="view-hrd-dashboard" class="view-section hidden max-w-6xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Dashboard HRD</h2>
+                <p class="text-slate-400">Kelola lowongan dan pelamar Anda.</p>
+            </div>
+            <div id="hrd-dashboard-content" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-slate-400 text-sm mb-1">Total Lowongan</div>
+                    <div class="text-3xl font-bold text-indigo-400" id="hrd-total-jobs">0</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-slate-400 text-sm mb-1">Total Pelamar</div>
+                    <div class="text-3xl font-bold text-emerald-400" id="hrd-total-applicants">0</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-slate-400 text-sm mb-1">Menunggu Review</div>
+                    <div class="text-3xl font-bold text-yellow-400" id="hrd-pending-review">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HRD Create Job View -->
+        <div id="view-hrd-create-job" class="view-section hidden max-w-3xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Buat Lowongan Pekerjaan Baru</h2>
+                <p class="text-slate-400">Publikasikan lowongan pekerjaan untuk menarik kandidat terbaik.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+                <div id="create-job-form-container"></div>
+            </div>
+        </div>
+
+        <!-- HRD My Jobs View -->
+        <div id="view-hrd-my-jobs" class="view-section hidden max-w-7xl mx-auto fade-in">
+            <div class="mb-8 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Lowongan Saya</h2>
+                    <p class="text-slate-400">Daftar lowongan yang telah Anda publikasikan.</p>
+                </div>
+                <button onclick="router.navigate('hrd-create-job')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow-lg shadow-indigo-600/20">
+                    + Buat Lowongan Baru
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="job-postings-container"></div>
+        </div>
+
+        <!-- HRD Applications View -->
+        <div id="view-hrd-applications" class="view-section hidden max-w-7xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Lamaran Pekerjaan</h2>
+                <p class="text-slate-400">Daftar lamaran untuk lowongan yang Anda posting.</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-slate-800/50 rounded-xl overflow-hidden">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Pelamar</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Posisi</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Tanggal Lamar</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Status</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700" id="job-applications-container"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- User Dashboard View -->
+        <div id="view-user-dashboard" class="view-section hidden max-w-6xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Dashboard</h2>
+                <p class="text-slate-400">Kelola karir dan lamaran Anda.</p>
+            </div>
+            <div id="user-dashboard-content" class="grid grid-cols-1 gap-6"></div>
+        </div>
+
+        <!-- User Jobs View -->
+        <div id="view-user-jobs" class="view-section hidden max-w-7xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Cari Pekerjaan</h2>
+                <p class="text-slate-400">Temukan pekerjaan impian Anda dari ribuan lowongan.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="user-jobs-content"></div>
+        </div>
+
+        <!-- User Applications View -->
+        <div id="view-user-applications" class="view-section hidden max-w-7xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Lamaran Saya</h2>
+                <p class="text-slate-400">Pantau status lamaran pekerjaan Anda.</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-slate-800/50 rounded-xl overflow-hidden">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Posisi</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Perusahaan</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Tanggal Lamar</th>
+                            <th class="py-3 px-4 text-left text-sm font-medium text-slate-300">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700" id="user-applications-content"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/modals') %>
+<%- include('partials/footer') %>
+
+<script>
+    // Show home view by default on homepage
+    document.addEventListener('DOMContentLoaded', () => {
+        const homeView = document.getElementById('view-home');
+        if (homeView) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            homeView.classList.remove('hidden');
+        }
+    });
+</script>

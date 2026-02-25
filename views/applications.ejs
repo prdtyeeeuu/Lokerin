@@ -1,0 +1,20 @@
+<%- include('partials/header', { title: 'Lamaran Saya' }) %>
+
+<div id="app-layout" class="flex flex-col min-h-screen">
+    <%- include('partials/nav') %>
+
+    <main id="main-content" class="flex-1 pt-16 sm:pt-20 px-4 pb-8 overflow-y-auto">
+        <div id="view-applications" class="view-section max-w-7xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white">Lamaran Saya</h2>
+                <p class="text-slate-400">Status lamaran pekerjaan Anda.</p>
+            </div>
+            <div id="applications-content" class="space-y-4">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/modals') %>
+<%- include('partials/footer') %>

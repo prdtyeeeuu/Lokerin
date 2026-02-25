@@ -1,0 +1,21 @@
+<%- include('partials/header', { title: 'Lowongan Kerja' }) %>
+
+<div id="app-layout" class="flex flex-col min-h-screen">
+    <%- include('partials/nav') %>
+
+    <main id="main-content" class="flex-1 pt-16 sm:pt-20 px-4 pb-8 overflow-y-auto">
+        <div id="view-jobs" class="view-section max-w-7xl mx-auto fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white mb-4">Cari Talent</h2>
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari berdasarkan nama, skill, atau posisi..." class="w-full input-dark rounded-xl py-3 pl-12 pr-4 text-sm">
+                </div>
+            </div>
+            <div id="candidate-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/modals') %>
+<%- include('partials/footer') %>

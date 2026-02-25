@@ -1,0 +1,62 @@
+<nav class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur flex items-center justify-between px-4 sm:px-6 fixed w-full z-40">
+    <!-- Logo -->
+    <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='/'">
+        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white" onclick="window.location.href='/'">
+            <i class="fa-solid fa-building"></i>
+        </div>
+        <span class="font-bold text-lg tracking-tight hidden sm:block">Lokerin</span>
+    </div>
+
+    <!-- Desktop Navigation Links -->
+    <div class="hidden md:flex items-center gap-1 bg-slate-800/50 p-1 rounded-lg" id="desktop-nav"></div>
+
+    <!-- Right Side: User Info & Logout -->
+    <div class="flex items-center gap-4">
+        <!-- User Info (Desktop) - Clickable to Profile -->
+        <div onclick="router.navigate('profile')" class="hidden md:flex items-center gap-3 px-3 py-1.5 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-700/50 transition-all">
+            <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm" id="nav-user-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-sm font-medium text-white" id="nav-username">Guest</span>
+                <span class="text-xs text-slate-400" id="nav-user-role"></span>
+            </div>
+        </div>
+
+        <!-- Logout Button (Desktop) -->
+        <button onclick="confirmLogout()" class="hidden md:flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 hover:text-red-300 transition-all">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="text-sm font-medium">Logout</span>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="text-slate-400 hover:text-white md:hidden" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="hidden bg-slate-900/95 backdrop-blur border-b border-slate-800 fixed w-full z-30 top-16 left-0 md:hidden">
+    <!-- Mobile User Info - Clickable to Profile -->
+    <div onclick="router.navigate('profile'); closeMobileMenu();" class="flex items-center gap-3 px-6 py-4 border-b border-slate-800 cursor-pointer hover:bg-slate-800/50 transition-all">
+        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold" id="mobile-nav-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm font-medium text-white" id="mobile-username">Guest</span>
+            <span class="text-xs text-slate-400" id="mobile-user-role"></span>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Links -->
+    <div class="flex flex-col py-3" id="mobile-nav"></div>
+
+    <!-- Mobile Logout -->
+    <div class="border-t border-slate-800 p-3">
+        <button onclick="confirmLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 hover:text-red-300 transition-all">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="text-sm font-medium">Logout</span>
+        </button>
+    </div>
+</div>

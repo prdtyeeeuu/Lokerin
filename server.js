@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -8,17 +9,21 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Setup EJS view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // Serve static files from root directory
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from public directory
 
 // Konfigurasi koneksi database
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // Ganti dengan username MySQL Anda
-  password: '', // Ganti dengan password MySQL Anda
-  database: 'lokerin_db'
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'lokerin_db'
 });
 
 // Membuat koneksi
@@ -658,15 +663,64 @@ app.get('/api/admin/users', authenticateToken, (req, res) => {
         console.error('Kesalahan mengambil pengguna:', err);
         return res.status(500).json({ message: 'Kesalahan server' });
       }
-      
+
       res.json(results);
     });
   });
 });
 
-// Route untuk halaman utama
+// ==================== WEB ROUTES ====================
+
+// Public routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.render('index', { title: 'Home' });
+});
+
+// Candidate/User routes
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard', { title: 'Dashboard' });
+});
+
+app.get('/profile', (req, res) => {
+  res.render('dashboard', { title: 'Profil' });
+});
+
+app.get('/jobs', (req, res) => {
+  res.render('dashboard', { title: 'Lowongan Kerja' });
+});
+
+app.get('/applications', (req, res) => {
+  res.render('dashboard', { title: 'Lamaran Saya' });
+});
+
+// HRD routes
+app.get('/hrd/dashboard', (req, res) => {
+  res.render('hrd-dashboard', { title: 'Dashboard HRD' });
+});
+
+app.get('/hrd/create-job', (req, res) => {
+  res.render('hrd-create-job', { title: 'Buat Lowongan' });
+});
+
+app.get('/hrd/my-jobs', (req, res) => {
+  res.render('hrd-my-jobs', { title: 'Lowongan Saya' });
+});
+
+app.get('/hrd/applications', (req, res) => {
+  res.render('hrd-applications', { title: 'Lamaran Masuk' });
+});
+
+// Admin routes
+app.get('/admin/dashboard', (req, res) => {
+  res.render('admin-dashboard', { title: 'Dashboard Admin' });
+});
+
+app.get('/admin/users', (req, res) => {
+  res.render('admin-users', { title: 'Manajemen Pengguna' });
+});
+
+app.get('/admin/stats', (req, res) => {
+  res.render('admin-stats', { title: 'Statistik' });
 });
 
 // Jalankan server
