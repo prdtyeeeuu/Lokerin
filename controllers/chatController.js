@@ -104,10 +104,16 @@ const showChatRoom = async (req, res) => {
 
     // Determine other party info
     const isApplicant = conversation.applicant_id === userId;
+    const otherPartyRole = isApplicant ? conversation.hr_role : conversation.applicant_role;
+    const roleLabels = {
+      admin: 'Admin',
+      hr: 'HR',
+      job_seeker: 'Pelamar'
+    };
     const otherParty = {
       name: isApplicant ? conversation.hr_name : conversation.applicant_name,
       image: isApplicant ? conversation.hr_image : conversation.applicant_image,
-      role: isApplicant ? 'HR' : 'Pelamar'
+      role: roleLabels[otherPartyRole] || (isApplicant ? 'HR' : 'Pelamar')
     };
 
     res.render('pages/chat/room', {
@@ -169,6 +175,32 @@ const startChat = async (req, res) => {
   } catch (error) {
     console.error('Start chat error:', error);
     res.status(500).json({ error: 'Gagal memulai chat' });
+  }
+};
+
+/**
+ * Memulai chat bantuan dengan admin
+ */
+const startSupportChat = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (req.user.role === 'admin') {
+      return res.redirect('/chat');
+    }
+
+    const conversationId = await Chat.getOrCreateSupportConversation(userId);
+
+    if (!conversationId) {
+      const returnUrl = req.body.returnUrl || '/hr/home';
+      return res.redirect(`${returnUrl}?error=${encodeURIComponent('Admin belum tersedia untuk chat')}`);
+    }
+
+    return res.redirect(`/chat/${conversationId}`);
+  } catch (error) {
+    console.error('Start support chat error:', error);
+    const returnUrl = req.body.returnUrl || '/hr/home';
+    return res.redirect(`${returnUrl}?error=${encodeURIComponent('Gagal memulai chat dengan admin')}`);
   }
 };
 
@@ -267,6 +299,7 @@ module.exports = {
   showInbox,
   showChatRoom,
   startChat,
+  startSupportChat,
   sendMessage,
   getNewMessages,
   chatAuth

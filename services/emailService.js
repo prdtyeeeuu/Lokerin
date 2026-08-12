@@ -150,6 +150,52 @@ function renderRejectionEmailTemplate({
   `;
 }
 
+function renderWarningEmailTemplate({
+  userName,
+  warningMessage,
+  warningDate,
+  dashboardUrl
+}) {
+  return `
+    <div style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 20px auto; border: 2px solid #ffc107; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background-color: #ffffff;">
+      <div style="background-color: #ffc107; padding: 25px; text-align: center;">
+        <div style="display: inline-block; background-color: #000; color: #ffc107; padding: 5px 15px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; font-size: 12px;">OFFICIAL NOTICE</div>
+        <h2 style="margin: 0; color: #000; text-transform: uppercase; letter-spacing: 1px; font-size: 22px;">Peringatan Pelanggaran Akun</h2>
+      </div>
+
+      <div style="padding: 30px;">
+        <p style="font-size: 16px;">Yth. <strong>${escapeHtml(userName)}</strong>,</p>
+        <p style="font-size: 13px; color: #666; margin-top: -6px;">Tanggal peringatan: <strong>${escapeHtml(warningDate)}</strong></p>
+
+        <p>Tim moderasi <strong>Lokerin</strong> telah meninjau aktivitas akun Anda dan menemukan adanya pelanggaran terhadap Syarat & Ketentuan platform kami.</p>
+
+        <div style="background-color: #fff9e6; border-left: 6px solid #ffc107; padding: 20px; margin: 25px 0; border-radius: 4px;">
+          <p style="margin: 0 0 8px 0; font-weight: bold; color: #856404; text-transform: uppercase; font-size: 12px;">Deskripsi Pelanggaran:</p>
+          <p style="margin: 0; font-size: 15px; color: #444; line-height: 1.5;">"${escapeHtml(warningMessage)}"</p>
+        </div>
+
+        <p style="font-size: 14px; color: #666;">Peringatan ini diberikan sebagai kesempatan bagi Anda untuk memperbaiki data atau perilaku akun Anda sebelum tindakan lebih lanjut diambil.</p>
+
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 6px; font-size: 13px; margin: 20px 0; border: 1px solid #f5c6cb;">
+          <strong>PERHATIAN:</strong> Jika pelanggaran serupa terjadi kembali, Lokerin berhak untuk membatasi fitur atau melakukan <strong>pemblokiran akun secara permanen</strong> tanpa pemberitahuan lebih lanjut.
+        </div>
+
+        <p style="font-size: 14px;">Silakan login ke platform untuk memberikan konfirmasi bahwa Anda telah menerima peringatan ini.</p>
+
+        <div style="text-align: center; margin: 35px 0 10px 0;">
+          <a href="${escapeHtml(dashboardUrl)}" style="background-color: #000000; color: #ffffff; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; display: inline-block;">MASUK KE DASHBOARD</a>
+        </div>
+      </div>
+
+      <div style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 11px; color: #999; border-top: 1px solid #eee;">
+        Email ini dikirim secara otomatis oleh Sistem Keamanan Lokerin.<br>
+        Harap patuhi Pedoman Komunitas kami untuk kenyamanan bersama.<br>
+        <div style="margin-top: 10px; font-weight: bold;">&copy; 2026 Lokerin Platform</div>
+      </div>
+    </div>
+  `;
+}
+
 async function sendInterviewInvitation({ to, jobSeekerName, companyName, jobPosition, schedule, meetingLink }) {
   const transporter = createTransporter();
   const scheduleText = schedule
@@ -246,11 +292,30 @@ async function sendApplicationRejectionEmail({
   });
 }
 
+async function sendWarningEmail({ to, userName, warningMessage, warningDate }) {
+  const transporter = createTransporter();
+  const dashboardUrl = `${getBaseUrl()}/dashboard`;
+
+  return transporter.sendMail({
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    to,
+    subject: 'Peringatan Pelanggaran Akun - Lokerin',
+    html: renderWarningEmailTemplate({
+      userName,
+      warningMessage,
+      warningDate,
+      dashboardUrl
+    })
+  });
+}
+
 module.exports = {
   sendInterviewInvitation,
   sendInterviewInvitationEmail,
   renderInterviewInvitationTemplate,
   renderRejectionEmailTemplate,
+  renderWarningEmailTemplate,
   sendApplicationRejectionEmail,
-  sendOfferingLetterEmail
+  sendOfferingLetterEmail,
+  sendWarningEmail
 };

@@ -18,25 +18,24 @@
   </div>
 
   <% if (typeof warnings !== 'undefined' && warnings && warnings.length > 0) { %>
-    <div style="margin-bottom: 24px; background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #f59e0b; border-radius: 12px; padding: 18px 20px;">
-      <div style="display: flex; align-items: flex-start; gap: 12px;">
-        <div style="width: 36px; height: 36px; border-radius: 10px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-          </svg>
+    <div id="warningGuardOverlay" role="dialog" aria-modal="true" aria-labelledby="warningGuardTitle" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.72);">
+      <div style="width: min(560px, 100%); max-height: 90vh; overflow: hidden; background: #fff; border: 2px solid #ffc107; border-radius: 8px; box-shadow: 0 24px 70px rgba(0,0,0,0.35);">
+        <div style="background: #ffc107; padding: 22px 26px; color: #000;">
+          <div style="display: inline-block; background: #000; color: #ffc107; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 800; letter-spacing: .6px; margin-bottom: 8px;">OFFICIAL NOTICE</div>
+          <h2 id="warningGuardTitle" style="margin: 0; font-size: 22px; font-weight: 800;">Peringatan Pelanggaran Akun</h2>
         </div>
-        <div style="min-width: 0;">
-          <h3 style="font-size: 16px; font-weight: 700; color: #92400e; margin: 0 0 6px;">Peringatan dari Admin</h3>
-          <p style="font-size: 14px; color: #78350f; margin: 0 0 10px;"><%= warnings[0].message %></p>
-          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <span style="font-size: 12px; color: #a16207;"><%= formatTimeAgo(warnings[0].created_at) %></span>
-            <a href="/chat" style="font-size: 13px; font-weight: 600; color: #2563eb; text-decoration: none;">Lihat semua peringatan</a>
-            <form action="/warnings/<%= warnings[0].id %>/acknowledge" method="POST" style="display: inline;">
-              <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-              <input type="hidden" name="returnUrl" value="/dashboard">
-              <button type="submit" style="border: 0; background: transparent; color: #92400e; font-size: 13px; font-weight: 700; cursor: pointer; padding: 0;">Saya mengerti</button>
-            </form>
+        <div style="padding: 26px;">
+          <p style="margin: 0 0 8px; color: #555; font-size: 14px;">Tanggal: <strong><%= new Date(warnings[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></strong></p>
+          <p style="margin: 0 0 18px; color: #333;">Anda wajib membaca peringatan resmi berikut sebelum melanjutkan penggunaan dashboard.</p>
+          <div id="warningMessageBox" style="max-height: 220px; overflow-y: auto; padding: 18px; border-left: 6px solid #ffc107; border-radius: 6px; background: #fff9e6; color: #3f3f46; line-height: 1.6; white-space: pre-wrap;"><%= warnings[0].message %></div>
+          <div style="margin: 18px 0; padding: 14px; border: 1px solid #f5c6cb; border-radius: 6px; background: #f8d7da; color: #721c24; font-size: 13px;">
+            <strong>PERHATIAN:</strong> Pelanggaran berulang dapat menyebabkan pembatasan fitur atau pemblokiran akun permanen.
           </div>
+          <form id="warningReadForm" action="/warnings/<%= warnings[0].id %>/acknowledge" method="POST">
+            <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+            <input type="hidden" name="returnUrl" value="/dashboard">
+            <button id="warningReadButton" type="submit" disabled style="width: 100%; min-height: 48px; border: 0; border-radius: 6px; background: #9ca3af; color: #fff; cursor: not-allowed; font-weight: 800; font-size: 14px;">Saya Mengerti &amp; Berjanji Tidak Mengulangi</button>
+          </form>
         </div>
       </div>
     </div>
@@ -195,6 +194,29 @@
 <script>
   // Apply company logo backgrounds dynamically
   document.addEventListener('DOMContentLoaded', function() {
+    var warningBox = document.getElementById('warningMessageBox');
+    var warningButton = document.getElementById('warningReadButton');
+
+    function enableWarningButtonIfRead() {
+      if (!warningBox || !warningButton) return;
+      var reachedEnd = warningBox.scrollTop + warningBox.clientHeight >= warningBox.scrollHeight - 8;
+      if (reachedEnd) {
+        warningButton.disabled = false;
+        warningButton.style.background = '#000';
+        warningButton.style.cursor = 'pointer';
+      }
+    }
+
+    if (warningBox && warningButton) {
+      if (warningBox.scrollHeight <= warningBox.clientHeight + 4) {
+        enableWarningButtonIfRead();
+      }
+      warningBox.addEventListener('scroll', enableWarningButtonIfRead);
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') event.preventDefault();
+      });
+    }
+
     document.querySelectorAll('.company-logo-small[data-logo]').forEach(function(el) {
       var logo = el.getAttribute('data-logo');
       if (logo) {

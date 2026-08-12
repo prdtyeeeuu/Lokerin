@@ -69,7 +69,7 @@
 
           <!-- Job Info -->
           <div class="job-info">
-            <h3 class="job-title"><a href="/jobs/<%= job.id %>?returnUrl=<%= encodeURIComponent('/jobs') %>" style="text-decoration:none; color:inherit; display:block; cursor:pointer;" class="hover-text-blue"><%= job.title %></a></h3>
+            <h3 class="job-title"><a href="/jobs/<%= job.id %>?returnUrl=%2Fjobs" style="text-decoration:none; color:inherit; display:block; cursor:pointer;" class="hover-text-blue"><%= job.title %></a></h3>
             <style>.hover-text-blue:hover { color: #2563eb !important; transition: color 0.2s; }</style>
 
             <div class="company-info">
@@ -146,7 +146,7 @@
               <% } else if (deadlinePassed) { %>
                 <button type="button" class="btn-apply" style="background-color: #ef4444; color: white; cursor: not-allowed; border:none;" disabled title="Lowongan sudah ditutup">Ditutup</button>
               <% } else { %>
-                <button type="button" class="btn-apply" onclick="window.location.href='/jobs/<%= job.id %>?returnUrl=<%= encodeURIComponent('/jobs') %>'">Lamar</button>
+                <button type="button" class="btn-apply" onclick="window.location.href='/jobs/<%= job.id %>?returnUrl=%2Fjobs'">Lamar</button>
               <% } %>
             <% } else { %>
               <% 
@@ -214,8 +214,10 @@
   </div>
 </div>
 
+<div id="jobs-data" data-selected-categories="<%= JSON.stringify(typeof selectedCategoryIds !== 'undefined' ? selectedCategoryIds : []) %>" style="display:none"></div>
+
 <script>
-  const selectedCategories = <%- JSON.stringify(typeof selectedCategoryIds !== 'undefined' ? selectedCategoryIds : []) %>;
+  const selectedCategories = JSON.parse(document.getElementById('jobs-data').dataset.selectedCategories || '[]');
   let allCategories = [];
   let popularCategories = [];
 

@@ -20,6 +20,9 @@ router.get('/api/:id/messages', chatController.getNewMessages);
 // POST /chat/start/:jobId - Mulai chat baru (hanya jika sudah melamar)
 router.post('/start/:jobId', chatController.chatAuth.checkApplicationExists, chatController.startChat);
 
+// POST /chat/support - Mulai chat bantuan dengan admin
+router.post('/support', chatController.startSupportChat);
+
 // POST /chat/send - Kirim pesan baru
 router.post('/send', chatController.sendMessage);
 

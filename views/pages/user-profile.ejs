@@ -79,7 +79,18 @@
         <div class="flex-1 mt-14 sm:mt-16 pt-1">
           <div class="flex flex-col md:flex-row md:items-start justify-between gap-3">
             <div>
-              <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight"><%= profileUser.name %></h1>
+              <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2 flex-wrap">
+                <%= profileUser.name %>
+                <% if (profileUser.role === 'admin') { %>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200">
+                    <span class="iconify text-xs" data-icon="lucide:shield"></span> Administrator
+                  </span>
+                <% } else if (profileUser.role === 'hr') { %>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+                    <span class="iconify text-xs" data-icon="lucide:building-2"></span> HR / Recruiter
+                  </span>
+                <% } %>
+              </h1>
               <p class="text-slate-500 text-sm mt-1"><%= profileUser.bio || 'Belum ada deskripsi singkat' %></p>
               <div class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
                 <span class="flex items-center gap-1.5">
@@ -88,7 +99,7 @@
                 </span>
                 <span class="flex items-center gap-1.5">
                   <span class="iconify text-brand-500" data-icon="lucide:user"></span>
-                  <span><%= profileUser.role === 'hr' ? 'HR / Recruiter' : 'Job Seeker' %></span>
+                  <span><%= profileUser.role === 'admin' ? 'Administrator' : (profileUser.role === 'hr' ? 'HR / Recruiter' : 'Job Seeker') %></span>
                 </span>
               </div>
             </div>
@@ -120,7 +131,14 @@
   <div class="grid lg:grid-cols-3 gap-6">
     <!-- LEFT COLUMN -->
     <div class="lg:col-span-2 space-y-6">
-
+      <% if (profileUser.role === 'admin') { %>
+        <!-- Empty State for Admin -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+          <span class="iconify text-6xl text-purple-600 mx-auto mb-4 block" data-icon="lucide:shield-check"></span>
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Profil Administrator</h3>
+          <p class="text-sm text-slate-500 max-w-md mx-auto">Sebagai Administrator sistem Lokerin, profil ini tidak menampilkan portofolio, keahlian, pengalaman, pendidikan, atau status pencarian kerja.</p>
+        </div>
+      <% } else { %>
       <!-- Tentang Saya -->
       <div class="bg-white rounded-2xl border border-slate-200 p-6">
         <h2 class="text-base font-bold text-slate-900 mb-3">Tentang Saya</h2>
@@ -235,6 +253,7 @@
         <p class="text-sm text-slate-500">User ini belum melengkapi profilnya.</p>
       </div>
       <% } %>
+      <% } %>
 
     </div>
 
@@ -244,15 +263,15 @@
       <!-- Role Badge -->
       <div class="bg-white rounded-2xl border border-slate-200 p-5">
         <h2 class="text-sm font-bold text-slate-900 mb-3">Tipe Akun</h2>
-        <div class="<%= profileUser.role === 'hr' ? 'bg-blue-50 border-blue-100' : 'bg-green-50 border-green-100' %> border rounded-xl p-4 text-center">
-          <p class="text-sm font-semibold <%= profileUser.role === 'hr' ? 'text-blue-700' : 'text-green-700' %>">
-            <%= profileUser.role === 'hr' ? '🏢 HR / Perusahaan' : '👤 Pencari Kerja' %>
+        <div class="<%= profileUser.role === 'admin' ? 'bg-purple-50 border-purple-100' : (profileUser.role === 'hr' ? 'bg-blue-50 border-blue-100' : 'bg-green-50 border-green-100') %> border rounded-xl p-4 text-center">
+          <p class="text-sm font-semibold <%= profileUser.role === 'admin' ? 'text-purple-700' : (profileUser.role === 'hr' ? 'text-blue-700' : 'text-green-700') %>">
+            <%= profileUser.role === 'admin' ? '🛡️ Administrator' : (profileUser.role === 'hr' ? '🏢 HR / Recruiter' : '👤 Pencari Kerja') %>
           </p>
         </div>
       </div>
 
       <!-- Ekspektasi Gaji (Job Seeker Only) -->
-      <% if (profileUser.role !== 'hr' && profileUser.expected_salary_min && profileUser.expected_salary_max) { %>
+      <% if (profileUser.role !== 'hr' && profileUser.role !== 'admin' && profileUser.expected_salary_min && profileUser.expected_salary_max) { %>
       <div class="bg-white rounded-2xl border border-slate-200 p-5">
         <h2 class="text-sm font-bold text-slate-900 mb-3">Ekspektasi Gaji</h2>
         <div class="bg-brand-50 border border-brand-100 rounded-xl p-4 text-center">

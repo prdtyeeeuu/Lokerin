@@ -164,7 +164,7 @@
   <script>
     function warnUser(id, name) {
       document.getElementById('warnUserName').innerText = name;
-      document.getElementById('warnForm').action = '/admin/users/' + id + '/warn';
+      document.getElementById('warnForm').action = '/admin/warn-user/' + id;
       document.getElementById('warnModal').classList.remove('hidden');
     }
     function closeWarnModal() {

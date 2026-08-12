@@ -9,6 +9,11 @@ const { validateReturnUrl } = require('../utils/helpers');
 const { generateOfferingLetterPdf } = require('../services/pdfService');
 const { sendOfferingLetterEmail } = require('../services/emailService');
 
+const getHrReturnUrl = (url, fallback = '/hr/jobs') => {
+  const returnUrl = validateReturnUrl(url) || fallback;
+  return returnUrl.startsWith('/hr/') ? returnUrl : fallback;
+};
+
 /**
  * Menampilkan homepage untuk HR
  */
@@ -157,11 +162,14 @@ const showManageJobs = async (req, res) => {
  * Menampilkan form buat lowongan baru
  */
 const showCreateJob = async (req, res) => {
+  const returnUrl = getHrReturnUrl(req.query.returnUrl);
+
   res.render('pages/hr/create-job', {
     title: 'Pasang Lowongan Baru - Lokerin',
     user: req.user,
     formData: {},
-    error: null
+    error: null,
+    returnUrl
   });
 };
 
@@ -171,6 +179,7 @@ const showCreateJob = async (req, res) => {
 const createJob = async (req, res) => {
   try {
     const { title, company, location, work_address, category, type, description, salary_min, salary_max, deadline, requirements } = req.body;
+    const returnUrl = getHrReturnUrl(req.body.returnUrl);
 
     // Validasi input
     if (!title || !company || !location || !work_address || !description) {
@@ -178,7 +187,8 @@ const createJob = async (req, res) => {
         title: 'Pasang Lowongan Baru - Lokerin',
         user: req.user,
         formData: req.body,
-        error: 'Judul, perusahaan, lokasi, alamat lengkap, dan deskripsi wajib diisi'
+        error: 'Judul, perusahaan, lokasi, alamat lengkap, dan deskripsi wajib diisi',
+        returnUrl
       });
     }
 
@@ -234,7 +244,8 @@ const createJob = async (req, res) => {
       title: 'Pasang Lowongan Baru - Lokerin',
       user: req.user,
       formData: req.body,
-      error: `Error: ${error.message}`
+      error: `Error: ${error.message}`,
+      returnUrl: getHrReturnUrl(req.body.returnUrl)
     });
   }
 };

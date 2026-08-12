@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const Report = require('../models/Report');
+const warningController = require('./warningController');
 
 const adminController = {
   // Tampilkan dashboard admin
@@ -10,15 +11,50 @@ const adminController = {
       const jobCountRows = await db.query('SELECT COUNT(*) as count FROM jobs');
       const applicationCountRows = await db.query('SELECT COUNT(*) as count FROM applications');
       const pendingReports = await Report.getPendingCount();
-      
+
+      // Detailed role counts
+      const seekerCountRows = await db.query("SELECT COUNT(*) as count FROM users WHERE role = 'job_seeker'");
+      const hrCountRows = await db.query("SELECT COUNT(*) as count FROM users WHERE role = 'hr'");
+      const adminCountRows = await db.query("SELECT COUNT(*) as count FROM users WHERE role = 'admin'");
+
+      // Detailed job status counts
+      const activeJobRows = await db.query("SELECT COUNT(*) as count FROM jobs WHERE status = 'active' AND (deadline IS NULL OR deadline >= CURDATE())");
+      const expiredJobRows = await db.query("SELECT COUNT(*) as count FROM jobs WHERE deadline < CURDATE()");
+      const suspendedJobRows = await db.query("SELECT COUNT(*) as count FROM jobs WHERE status = 'suspended'");
+
+      // Detailed application counts
+      const acceptedAppRows = await db.query("SELECT COUNT(*) as count FROM applications WHERE status = 'accepted'");
+      const rejectedAppRows = await db.query("SELECT COUNT(*) as count FROM applications WHERE status IN ('rejected', 'declined')");
+      const pendingAppRows = await db.query("SELECT COUNT(*) as count FROM applications WHERE status = 'applied'");
+      const interviewingAppRows = await db.query("SELECT COUNT(*) as count FROM applications WHERE status = 'interviewing'");
+
+      // Total reports count (this month)
+      const totalReportsRows = await db.query("SELECT COUNT(*) as count FROM reports WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+
+      // Mini stats
+      const interviewTodayRows = await db.query("SELECT COUNT(*) as count FROM applications WHERE status = 'interviewing' AND interview_date = CURDATE()");
+      const activeHrRows = await db.query("SELECT COUNT(*) as count FROM users WHERE role = 'hr' AND status = 'active'");
+
       const stats = {
         users: userCountRows[0].count,
         jobs: jobCountRows[0].count,
         applications: applicationCountRows[0].count,
-        pendingReports
+        pendingReports,
+        seekerCount: seekerCountRows[0].count,
+        hrCount: hrCountRows[0].count,
+        adminCount: adminCountRows[0].count,
+        activeJobs: activeJobRows[0].count,
+        expiredJobs: expiredJobRows[0].count,
+        suspendedJobs: suspendedJobRows[0].count,
+        acceptedApps: acceptedAppRows[0].count,
+        rejectedApps: rejectedAppRows[0].count,
+        pendingApps: pendingAppRows[0].count + interviewingAppRows[0].count,
+        totalReports: totalReportsRows[0].count,
+        interviewToday: interviewTodayRows[0].count,
+        activeHrs: activeHrRows[0].count
       };
 
-      // Get recent jobs
+      // Get recent jobs with HR info
       const recentJobs = await db.query(`
         SELECT j.*, u.name as company_name 
         FROM jobs j 
@@ -26,10 +62,90 @@ const adminController = {
         ORDER BY j.created_at DESC LIMIT 5
       `);
 
+      // Get recent activities
+      const recentActivities = [];
+
+      // 1. Recent seeker/hr registrations
+      const recentUsers = await db.query(`
+        SELECT name, role, created_at
+        FROM users
+        ORDER BY created_at DESC LIMIT 5
+      `);
+      recentUsers.forEach(u => {
+        recentActivities.push({
+          title: u.role === 'job_seeker' ? `${u.name} mendaftar sebagai pencari kerja` : u.role === 'hr' ? `${u.name} mendaftar sebagai recruiter` : `${u.name} mendaftar sebagai admin`,
+          time: u.created_at,
+          icon: u.role === 'job_seeker' ? 'user-plus' : 'building-2',
+          iconColor: u.role === 'job_seeker' ? 'emerald' : 'purple'
+        });
+      });
+
+      // 2. Recent job postings
+      const recentJobPostings = await db.query(`
+        SELECT j.title, u.name as company_name, j.created_at
+        FROM jobs j
+        LEFT JOIN users u ON j.hr_id = u.id
+        ORDER BY j.created_at DESC LIMIT 5
+      `);
+      recentJobPostings.forEach(j => {
+        recentActivities.push({
+          title: `${j.company_name || 'HR'} memposting lowongan ${j.title}`,
+          time: j.created_at,
+          icon: 'briefcase',
+          iconColor: 'blue'
+        });
+      });
+
+      // 3. Recent applications
+      const recentApps = await db.query(`
+        SELECT u.name as user_name, j.title as job_title, a.created_at
+        FROM applications a
+        JOIN users u ON a.user_id = u.id
+        JOIN jobs j ON a.job_id = j.id
+        ORDER BY a.created_at DESC LIMIT 5
+      `);
+      recentApps.forEach(a => {
+        recentActivities.push({
+          title: `${a.user_name} melamar ke ${a.job_title}`,
+          time: a.created_at,
+          icon: 'file-text',
+          iconColor: 'blue'
+        });
+      });
+
+      // Sort recent activities by time DESC and take 8
+      recentActivities.sort((a, b) => new Date(b.time) - new Date(a.time));
+      const finalActivities = recentActivities.slice(0, 8);
+
+      // Get recent applications for the review card section (6 applications)
+      const recentApplicationsForReview = await db.query(`
+        SELECT a.id, a.status, a.created_at, u.name as seeker_name, u.email as seeker_email, u.profile_image, 
+               j.title as job_title, j.company as job_company, j.location as job_location,
+               (SELECT GROUP_CONCAT(name) FROM skills WHERE user_id = u.id) as seeker_skills
+        FROM applications a
+        JOIN users u ON a.user_id = u.id
+        JOIN jobs j ON a.job_id = j.id
+        ORDER BY a.created_at DESC LIMIT 6
+      `);
+
+      // Top Companies (4 companies)
+      const topCompanies = await db.query(`
+        SELECT u.id, u.name, u.profile_image, u.status,
+               (SELECT COUNT(*) FROM jobs WHERE hr_id = u.id) as job_count,
+               (SELECT COUNT(*) FROM applications a JOIN jobs j ON a.job_id = j.id WHERE j.hr_id = u.id) as app_count
+        FROM users u
+        WHERE u.role = 'hr'
+        ORDER BY job_count DESC, app_count DESC
+        LIMIT 4
+      `);
+
       res.render('pages/admin/dashboard', {
         title: 'Admin Dashboard | Lokerin',
         stats,
-        recentJobs
+        recentJobs,
+        recentActivities: finalActivities,
+        recentApplicationsForReview,
+        topCompanies
       });
     } catch (error) {
       next(error);
@@ -170,15 +286,7 @@ const adminController = {
 
   // Beri peringatan ke user
   warnUser: async (req, res, next) => {
-    try {
-      const { id } = req.params;
-      const { message } = req.body;
-      
-      await db.query('INSERT INTO warnings (user_id, message) VALUES (?, ?)', [id, message]);
-      res.redirect('/admin/users');
-    } catch (error) {
-      next(error);
-    }
+    return warningController.warnUser(req, res, next);
   },
 
   // Tampilkan daftar jobs

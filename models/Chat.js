@@ -55,6 +55,66 @@ const Chat = {
   },
 
   /**
+   * Mendapatkan atau membuat conversation bantuan dengan admin.
+   * Conversation tetap memakai struktur chat yang ada:
+   * user peminta bantuan sebagai applicant_id, admin sebagai hr_id.
+   */
+  getOrCreateSupportConversation: async (userId) => {
+    const admins = await query(
+      "SELECT id FROM users WHERE role = 'admin' AND id <> ? ORDER BY id ASC LIMIT 1",
+      [userId]
+    );
+
+    if (admins.length === 0) {
+      return null;
+    }
+
+    const adminId = admins[0].id;
+    const supportJobId = await Chat.getOrCreateSupportJob(adminId);
+
+    return await Chat.getOrCreateConversation(userId, adminId, supportJobId);
+  },
+
+  /**
+   * Membuat konteks lowongan sistem untuk chat support bila belum ada.
+   */
+  getOrCreateSupportJob: async (adminId) => {
+    const checkSql = `
+      SELECT id FROM jobs
+      WHERE title = ? AND company = ? AND hr_id = ?
+      ORDER BY id ASC
+      LIMIT 1
+    `;
+    const existing = await query(checkSql, ['Lokerin Support', 'Lokerin', adminId]);
+
+    if (existing.length > 0) {
+      return existing[0].id;
+    }
+
+    const insertSql = `
+      INSERT INTO jobs (title, company, location, category, type, description, hr_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    const result = await query(insertSql, [
+      'Lokerin Support',
+      'Lokerin',
+      'Online',
+      'Support',
+      'Remote',
+      'Percakapan bantuan dengan tim admin Lokerin.',
+      adminId
+    ]);
+
+    try {
+      await query("UPDATE jobs SET status = 'suspended' WHERE id = ?", [result.insertId]);
+    } catch (error) {
+      // Beberapa skema lama belum memiliki kolom status; chat tetap bisa berjalan.
+    }
+
+    return result.insertId;
+  },
+
+  /**
    * Mengirim pesan baru
    * @param {object} messageData - { conversation_id, sender_id, receiver_id, message }
    * @returns {Promise} - Message ID
@@ -193,8 +253,10 @@ const Chat = {
         j.company,
         j.location,
         applicant.name as applicant_name,
+        applicant.role as applicant_role,
         applicant.profile_image as applicant_image,
         hr.name as hr_name,
+        hr.role as hr_role,
         hr.profile_image as hr_image
       FROM chat_conversations c
       JOIN jobs j ON c.job_id = j.id

@@ -136,7 +136,7 @@
                 </form>
               <% } %>
               <% if ((app.status === 'declined' || app.status === 'rejected') && app.rejection_reason) { %>
-                <button type="button" class="action-link" onclick='lihatAlasan(<%- JSON.stringify(app.rejection_reason) %>)'>Lihat Alasan</button>
+                <button type="button" class="action-link" data-reason="<%= app.rejection_reason %>" onclick="lihatAlasan(this.getAttribute('data-reason'))">Lihat Alasan</button>
               <% } %>
               <% if (app.status === 'offered' && app.document_path) { %>
                 <a href="<%= app.document_path %>" target="_blank" class="action-link primary" title="Unduh dan tinjau dokumen offering">

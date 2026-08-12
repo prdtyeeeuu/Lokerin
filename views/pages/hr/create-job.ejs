@@ -271,11 +271,11 @@
 
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <a href="/hr/jobs" class="btn-back">
+    <a href="<%= typeof returnUrl !== 'undefined' ? returnUrl : '/hr/jobs' %>" class="btn-back">
       <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
       </svg>
-      Kembali ke Kelola Lowongan
+      Kembali
     </a>
 
     <div class="form-container">
@@ -295,6 +295,8 @@
         <% } %>
 
         <form action="/hr/jobs?_csrf=<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="returnUrl" value="<%= typeof returnUrl !== 'undefined' ? returnUrl : '/hr/jobs' %>">
+
           <!-- Judul Lowongan -->
           <div class="form-group">
             <label class="form-label">

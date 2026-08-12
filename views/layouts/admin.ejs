@@ -1,209 +1,240 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= typeof title !== 'undefined' ? title : 'Admin Panel | Lokerin' %></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Admin Panel | Lokerin' %></title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Tailwind Config (Sama seperti main.ejs) -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#FFFFFF',
-            secondary: '#ADCEFF',
-            'secondary-light': '#C3ADFF',
-          },
-        },
-      },
-    }
-  </script>
-
-  <!-- Global Fetch CSRF Token Interceptor -->
-  <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-  <script>
-    (function() {
-      const origFetch = window.fetch;
-      const csrfToken = "<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>";
-      window.fetch = async function(...args) {
-        let resource = args[0];
-        let config = args[1];
-        
-        if (config && config.method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(config.method.toUpperCase())) {
-          if (!config.headers) {
-            config.headers = {};
-          }
-          if (config.headers instanceof Headers) {
-            if (!config.headers.has('x-csrf-token')) config.headers.append('x-csrf-token', csrfToken);
-          } else {
-            config.headers['x-csrf-token'] = csrfToken;
-          }
-          args[1] = config;
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
         }
-        return origFetch.apply(window, args);
-      };
-    })();
-  </script>
+    </script>
+    
+    <!-- CSRF Token Meta -->
+    <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+    <script>
+        (function() {
+          const origFetch = window.fetch;
+          const csrfToken = "<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>";
+          window.fetch = async function(...args) {
+            let resource = args[0];
+            let config = args[1];
+            
+            if (config && config.method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(config.method.toUpperCase())) {
+              if (!config.headers) {
+                config.headers = {};
+              }
+              if (config.headers instanceof Headers) {
+                if (!config.headers.has('x-csrf-token')) config.headers.append('x-csrf-token', csrfToken);
+              } else {
+                config.headers['x-csrf-token'] = csrfToken;
+              }
+              args[1] = config;
+            }
+            return origFetch.apply(window, args);
+          };
+        })();
+    </script>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #F3F4F6; }
+        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: #f3f4f6; /* Gray-50 untuk kontras dengan konten putih */
-      color: #1a1a1a;
-    }
-    .sidebar {
-      width: 250px;
-      min-height: 100vh;
-      background: white; /* Sama dengan tema utama */
-      border-right: 1px solid #e5e7eb;
-    }
-    .main-content {
-      flex: 1;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      color: #4b5563;
-      transition: all 0.2s;
-    }
-    .nav-item:hover {
-      background-color: #ADCEFF; /* Menggunakan secondary color */
-      color: #1f2937;
-    }
-    .nav-item.active {
-      background-color: #C3ADFF; /* Menggunakan secondary-light color */
-      color: #1f2937;
-      font-weight: 600;
-    }
-    .nav-icon {
-      width: 1.25rem;
-      height: 1.25rem;
-      margin-right: 0.75rem;
-    }
-  </style>
+        .sidebar-link { transition: all 0.15s ease; }
+        .sidebar-link:hover { background: #F3F4F6; color: #111827; }
+        .sidebar-link.active { background: #EFF6FF; color: #2563EB; font-weight: 600; }
+        .sidebar-link.active .sidebar-icon { color: #2563EB; }
 
-  <!-- Extracted Styles -->
-  <%- typeof style !== 'undefined' ? style : '' %>
+        .sidebar-overlay { display: none; }
+        .sidebar-mobile-open .sidebar-overlay { display: block; }
+        @media (max-width: 1023px) {
+            .sidebar-panel { transform: translateX(-100%); transition: transform 0.3s ease; position: fixed; z-index: 50; height: 100vh; }
+            .sidebar-mobile-open .sidebar-panel { transform: translateX(0); }
+        }
+
+        .notification-dot::after {
+            content: '';
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 7px; height: 7px;
+            background: #2563EB;
+            border-radius: 50%;
+            border: 1.5px solid white;
+        }
+    </style>
+    
+    <!-- Extracted Styles -->
+    <%- typeof style !== 'undefined' ? style : '' %>
 </head>
-<body class="flex">
+<body class="bg-gray-50 text-gray-900 min-h-screen">
 
-  <!-- Sidebar -->
-  <aside class="sidebar flex flex-col fixed inset-y-0 left-0 z-50">
-    <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-      <a href="/" class="flex items-center space-x-2">
-        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
-          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5ZM6.5 8V6.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5ZM5 5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 5V5Zm.5-3a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-5ZM3 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12Z"/>
-          </svg>
+    <div class="sidebar-overlay fixed inset-0 bg-black/30 z-40 lg:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar-panel fixed top-0 left-0 h-full w-60 bg-white border-r border-gray-200 z-50 flex flex-col lg:translate-x-0">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
+                    <i data-lucide="briefcase" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight text-gray-900">Lokerin</h1>
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-medium">Admin Panel</p>
+                </div>
+            </a>
+            <button class="lg:hidden text-gray-400 hover:text-gray-600" onclick="toggleSidebar()">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
         </div>
-        <span class="text-xl font-bold text-gray-800 tracking-tight">Lokerin<span class="text-indigo-600">.</span></span>
-      </a>
-    </div>
+        <nav class="flex-1 overflow-y-auto py-4 px-3">
+            <p class="px-3 mb-2 text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Admin Panel</p>
+            
+            <% 
+              // Menentukan page active
+              let currentActive = typeof active !== 'undefined' ? active : '';
+              if (typeof title !== 'undefined' && title.includes('Dashboard')) currentActive = 'admin-dashboard';
+              else if (typeof title !== 'undefined' && title.includes('Users')) currentActive = 'admin-users';
+              else if (typeof title !== 'undefined' && title.includes('Jobs')) currentActive = 'admin-jobs';
+              else if (typeof title !== 'undefined' && title.includes('Reports')) currentActive = 'admin-reports';
+              else if (typeof title !== 'undefined' && title.includes('Gambar')) currentActive = 'admin-images';
+            %>
 
-    <div class="flex-1 overflow-y-auto py-4 px-3">
-      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3">Admin Panel</div>
-      
-      <nav class="space-y-1">
-        <a href="/admin/dashboard" class="nav-item <%= typeof active !== 'undefined' && active === 'admin-dashboard' ? 'active' : '' %>">
-          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-          Dashboard
-        </a>
-        <a href="/admin/users" class="nav-item <%= typeof active !== 'undefined' && active === 'admin-users' ? 'active' : '' %>">
-          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-          Users
-        </a>
-        <a href="/admin/jobs" class="nav-item <%= typeof active !== 'undefined' && active === 'admin-jobs' ? 'active' : '' %>">
-          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-          Jobs
-        </a>
-        <a href="/admin/reports" class="nav-item <%= typeof active !== 'undefined' && active === 'admin-reports' ? 'active' : '' %>">
-          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z"></path></svg>
-          Reports
-        </a>
-        <a href="/admin/images" class="nav-item <%= typeof active !== 'undefined' && active === 'admin-images' ? 'active' : '' %>">
-          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-          Images
-        </a>
-      </nav>
-      
-      <div class="mt-8">
-        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3">Public</div>
-        <nav class="space-y-1">
-          <a href="/" class="nav-item">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-            Kembali ke Lokerin
-          </a>
+            <a href="/admin/dashboard" class="sidebar-link <%= currentActive === 'admin-dashboard' ? 'active' : '' %> flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 mb-0.5">
+                <i data-lucide="layout-dashboard" class="w-[18px] h-[18px] sidebar-icon"></i>Dashboard
+            </a>
+            <a href="/admin/users" class="sidebar-link <%= currentActive === 'admin-users' ? 'active' : '' %> flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 mb-0.5">
+                <i data-lucide="users" class="w-[18px] h-[18px] sidebar-icon"></i>Users
+                <% if (typeof sidebarStats !== 'undefined' && sidebarStats.users) { %>
+                    <span class="ml-auto bg-blue-50 text-blue-600 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"><%= sidebarStats.users %></span>
+                <% } %>
+            </a>
+            <a href="/admin/jobs" class="sidebar-link <%= currentActive === 'admin-jobs' ? 'active' : '' %> flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 mb-0.5">
+                <i data-lucide="briefcase" class="w-[18px] h-[18px] sidebar-icon"></i>Jobs
+            </a>
+            <a href="/admin/reports" class="sidebar-link <%= currentActive === 'admin-reports' ? 'active' : '' %> flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 mb-0.5">
+                <i data-lucide="flag" class="w-[18px] h-[18px] sidebar-icon"></i>Reports
+                <% if (typeof sidebarStats !== 'undefined' && sidebarStats.pendingReports > 0) { %>
+                    <span class="ml-auto bg-red-100 text-red-600 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"><%= sidebarStats.pendingReports %></span>
+                <% } %>
+            </a>
+            <a href="/admin/images" class="sidebar-link <%= currentActive === 'admin-images' ? 'active' : '' %> flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 mb-0.5">
+                <i data-lucide="image" class="w-[18px] h-[18px] sidebar-icon"></i>Images
+            </a>
+            
+            <p class="px-3 mt-6 mb-2 text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Public</p>
+            <a href="/" class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 mb-0.5">
+                <i data-lucide="external-link" class="w-[18px] h-[18px] sidebar-icon"></i>Kembali ke Lokerin
+            </a>
         </nav>
-      </div>
+        <div class="p-3 border-t border-gray-100">
+            <div class="bg-gray-50 rounded-xl p-3.5">
+                <div class="flex items-center gap-3 mb-3">
+                    <% let adminUser = typeof currentUser !== 'undefined' && currentUser ? currentUser : (typeof user !== 'undefined' && user ? user : null); %>
+                    <% if (adminUser) { %>
+                        <img src="<%= adminUser.profile_image ? '/images/profiles/' + adminUser.profile_image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(adminUser.name) %>" 
+                             alt="Admin" class="w-9 h-9 rounded-full object-cover border border-gray-200">
+                        <div class="min-w-0 flex-1 flex flex-col">
+                            <p class="text-sm font-semibold text-gray-900 truncate leading-none mb-1"><%= adminUser.name %></p>
+                            <p class="text-[10px] text-gray-400 truncate leading-none"><%= adminUser.email %></p>
+                        </div>
+                    <% } else { %>
+                        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">A</div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-semibold text-gray-900 truncate">Admin System</p>
+                            <p class="text-[11px] text-gray-400 truncate">admin@test.com</p>
+                        </div>
+                    <% } %>
+                </div>
+                <form action="/logout" method="POST" class="w-full">
+                    <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                    <button type="submit" class="flex items-center gap-2 text-xs text-red-500 hover:text-red-600 transition-colors font-medium">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="lg:ml-60 min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+            <div class="flex items-center justify-between px-4 sm:px-6 py-3">
+                <div class="flex items-center gap-4">
+                    <button class="lg:hidden text-gray-500 hover:text-gray-700" onclick="toggleSidebar()">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-lg font-bold tracking-tight text-gray-900">
+                            <%= typeof title !== 'undefined' ? title.split('|')[0].trim() : 'Admin Panel' %>
+                        </h2>
+                        <p class="text-xs text-gray-400">Selamat datang kembali, Admin! 👋</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="hidden md:flex items-center bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 gap-2 w-56">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                        <input type="text" placeholder="Cari sesuatu..." class="bg-transparent text-sm outline-none w-full placeholder-gray-400">
+                    </div>
+                    <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors notification-dot">
+                        <i data-lucide="bell" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                    <div class="hidden sm:flex items-center gap-2 text-xs text-gray-400 bg-gray-50 border border-gray-100 px-3 py-2 rounded-lg">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        <span id="currentDate"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Body -->
+        <main class="flex-1 p-4 sm:p-6 space-y-5">
+            <%- body %>
+        </main>
+
+        <footer class="border-t border-gray-100 bg-white px-6 py-4 flex items-center justify-between text-xs text-gray-400 mt-auto">
+            <p>© 2025 Lokerin. Sistem Manajemen Rekrutmen.</p>
+            <p>v2.1.0</p>
+        </footer>
     </div>
 
-    <!-- Admin Profile & Logout -->
-    <div class="p-4 border-t border-gray-100">
-      <% let adminUser = typeof currentUser !== 'undefined' && currentUser ? currentUser : (typeof user !== 'undefined' && user ? user : null); %>
-      <% if (adminUser) { %>
-        <a href="/profile" class="flex items-center mb-4 px-2 hover:bg-gray-50 p-2 rounded-lg transition-colors cursor-pointer group" title="Kustomisasi Profil Admin">
-          <img src="<%= adminUser.profile_image ? '/images/profiles/' + adminUser.profile_image : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(adminUser.name) %>" 
-               alt="Admin" class="w-8 h-8 rounded-full border border-gray-200 group-hover:border-indigo-300 transition-colors">
-          <div class="ml-3 truncate flex-1">
-            <p class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors"><%= adminUser.name %></p>
-            <p class="text-xs text-gray-500 truncate"><%= adminUser.email %></p>
-          </div>
-          <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </a>
-      <% } %>
-      <form action="/logout" method="POST" class="w-full">
-        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-        <button type="submit" class="w-full flex justify-center items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-          Logout
-        </button>
-      </form>
-    </div>
-  </aside>
+    <script src="/js/lokerin-modal.js"></script>
+    <script>
+        lucide.createIcons();
 
-  <!-- Main Content Area -->
-  <main class="main-content ml-[250px] relative">
-    <!-- Optional: Top Header inside main content if needed -->
-    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40 px-8 py-4 flex items-center justify-between">
-      <div>
-        <!-- Breadcrumb / Header Title bisa diletakkan di sini -->
-        <h1 class="text-lg font-semibold text-gray-800"><%= typeof title !== 'undefined' ? title.split('|')[0].trim() : 'Admin Panel' %></h1>
-      </div>
-      <div>
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-          Administrator
-        </span>
-      </div>
-    </header>
+        const now = new Date();
+        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+        const dateEl = document.getElementById('currentDate');
+        if (dateEl) {
+            dateEl.textContent = now.toLocaleDateString('id-ID', options);
+        }
 
-    <!-- Page Content -->
-    <div class="p-4 sm:p-6 lg:p-8">
-      <%- body %>
-    </div>
-  </main>
-
-  <script src="/js/lokerin-modal.js"></script>
-  <!-- Extracted Scripts -->
-  <%- typeof script !== 'undefined' ? script : '' %>
-  <!-- Custom Popups -->
-  <%- include('../partials/custom-popups') %>
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-mobile-open');
+        }
+    </script>
+    
+    <!-- Extracted Scripts -->
+    <%- typeof script !== 'undefined' ? script : '' %>
+    <!-- Custom Popups -->
+    <%- include('../partials/custom-popups') %>
 </body>
 </html>

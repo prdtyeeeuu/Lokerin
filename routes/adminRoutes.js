@@ -7,9 +7,23 @@ const { companyLogo } = require('../middleware/upload');
 // Apply requireAdmin middleware to all routes in this router
 router.use(requireAdmin);
 
-// Set admin layout
-router.use((req, res, next) => {
+// Set admin layout and load sidebar stats globally
+router.use(async (req, res, next) => {
   res.locals.layout = 'layouts/admin';
+  const db = require('../config/db');
+  const Report = require('../models/Report');
+  try {
+    const userCountRows = await db.query('SELECT COUNT(*) as count FROM users');
+    const pendingReports = await Report.getPendingCount();
+    
+    res.locals.sidebarStats = {
+      users: userCountRows[0]?.count || 0,
+      pendingReports: pendingReports || 0
+    };
+  } catch (err) {
+    console.error('Error fetching admin sidebar stats:', err);
+    res.locals.sidebarStats = { users: 0, pendingReports: 0 };
+  }
   next();
 });
 

@@ -266,7 +266,7 @@
         <h1>📋 Kelola Lowongan</h1>
         <p class="text-gray-600 mt-1">Kelola semua lowongan pekerjaan yang Anda buat</p>
       </div>
-      <a href="/hr/jobs/create" class="btn-post-job">
+      <a href="/hr/jobs/create?returnUrl=<%= encodeURIComponent('/hr/jobs') %>" class="btn-post-job">
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
           <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
         </svg>
@@ -376,7 +376,9 @@
                           <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.5h.5a1 1 0 0 1 1 1v.5zm-1.5 0H13V3H3v.5h10zM5 4a.5.5 0 0 1 .5-.5h5A.5.5 0 0 1 11 4v.5h-6V4z"/>
                         </svg>
                     </button>
-                    <form id="form-delete-<%= job.id %>" action="/hr/jobs/<%= job.id %>?_method=DELETE" method="POST" style="display:none"></form>
+                    <form id="form-delete-<%= job.id %>" action="/hr/jobs/<%= job.id %>?_method=DELETE" method="POST" style="display:none">
+                      <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                    </form>
                   </div>
                 </td>
               </tr>
@@ -391,7 +393,7 @@
         </svg>
         <h3>Belum Ada Lowongan</h3>
         <p>Anda belum membuat lowongan pekerjaan. Mulai pasang lowongan untuk mencari kandidat terbaik!</p>
-        <a href="/hr/jobs/create" class="btn-post-job">
+        <a href="/hr/jobs/create?returnUrl=<%= encodeURIComponent('/hr/jobs') %>" class="btn-post-job">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
           </svg>
@@ -409,6 +411,9 @@ async function deleteJob(jobId) {
     cancelText: 'Batal',
     danger: true
   });
-  if (ok) document.getElementById('form-delete-' + jobId).submit();
+  if (!ok) return;
+
+  const form = document.getElementById('form-delete-' + jobId);
+  if (form) form.submit();
 }
 </script>
